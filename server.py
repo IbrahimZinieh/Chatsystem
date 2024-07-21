@@ -86,10 +86,9 @@ def start_server(server_socket):
                 client_socket.send(f"Users online: {', '.join(clients.keys())}".encode("utf-8"))
             username = client_socket.recv(1024).decode("utf-8")
             # Check if username is already taken
-            if username in clients:
-                client_socket.send("Username already taken.".encode("utf-8"))
-                client_socket.close()
-                continue
+            while username in clients:
+                client_socket.send("Username already taken. Please enter a different username: ".encode("utf-8"))
+                username = client_socket.recv(1024).decode("utf-8")
             clients[username] = client_socket
             addresses[client_socket] = client_address
 
