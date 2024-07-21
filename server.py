@@ -1,6 +1,5 @@
 import socket
 import threading
-import os
 
 clients = {}
 addresses = {}
@@ -76,18 +75,24 @@ def start_server(server_socket):
     server_socket.listen()
     print("[*] Server listening on port 12345")
 
-    while True:
-        client_socket, client_address = server_socket.accept()
-        client_socket.send("Enter your username: ".encode("utf-8"))
-        username = client_socket.recv(1024).decode("utf-8")
-        clients[username] = client_socket
-        addresses[client_socket] = client_address
+    try:
+        while True:
+            client_socket, client_address = server_socket.accept()
+            client_socket.send("Enter your username: ".encode("utf-8"))
+            username = client_socket.recv(1024).decode("utf-8")
+            clients[username] = client_socket
+            addresses[client_socket] = client_address
 
-        print(f"[+] New connection from {client_address} as {username}")
-        broadcast(f"{username} has joined the chat!", username)
+            print(f"[+] New connection from {client_address} as {username}")
+            broadcast(f"{username} has joined the chat!", username)
 
-        client_handler = threading.Thread(target=handle_client, args=(client_socket, username))
-        client_handler.start()
+            client_handler = threading.Thread(target=handle_client, args=(client_socket, username))
+            client_handler.start()
+    except KeyboardInterrupt:
+        print("\nShutting down the server...")
+    finally:
+        server_socket.close()
+        print("Server socket closed.")
 
 if __name__ == "__main__":
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
