@@ -79,6 +79,7 @@ def start_server(server_socket):
         while True:
             client_socket, client_address = server_socket.accept()
             client_socket.send("Enter your username: ".encode("utf-8"))
+            client_socket.send(f"Users online: {', '.join(clients.keys())}".encode("utf-8"))
             username = client_socket.recv(1024).decode("utf-8")
             clients[username] = client_socket
             addresses[client_socket] = client_address
