@@ -81,6 +81,7 @@ def start_server(server_socket):
             client_socket.send("Enter your username: ".encode("utf-8"))
             if len(clients.keys()) == 0:
                 print("[*] First user connected.")
+                client_socket.send("No other users online.".encode("utf-8"))
             else:
                 client_socket.send(f"Users online: {', '.join(clients.keys())}".encode("utf-8"))
             username = client_socket.recv(1024).decode("utf-8")
